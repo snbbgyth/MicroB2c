@@ -1,0 +1,81 @@
+﻿@using Microsoft.Web.Helpers
+@using MicroB2c.Core.DbModel
+@using MicroB2c.Web.DAL.Manage
+@using MicroB2c.Web.Help
+@using MicroB2c.Web.Models
+@{
+    ViewBag.Title = "赣州中学";
+}
+@{
+    var sliderList = NewsManage.QueryHomeIndexSliderWrapper(5);
+    var recommendNew = sliderList.FirstOrDefault() ?? new News();
+    var newsType = NewsManage.QueryNewsTypeByName("学校新闻");
+    var newsList = NewsManage.QueryHomeIndexNews(10);
+}
+<script type="text/javascript">
+    var j = jQuery.noConflict();
+    j(document).ready(function () {
+        j('#nivo-slider').nivoSlider();
+    });
+</script>
+
+<div style=" margin: 0;padding: 0;">
+    <div class="topnews">
+        <div class="xwzx_icon">
+            <img src="/images/Home/xwzx.jpg" alt="推荐新闻" width="74" height="78" border="0">
+        </div>
+        <div class="xwzx_content">
+            <div class="topnews_title">
+                <a title=@recommendNew.Title href="/News/Details/@recommendNew.Id">@recommendNew.Title</a>
+            </div>
+            <div class="topnews_content">
+                @Html.Raw(recommendNew.Content.StripTagsRegex().ToSummary(80))
+            </div>
+        </div>
+    </div>
+    <div class="newsblock2c">
+        <div width="720px"  class="newsblock1b">
+            <div width="390px" class="slider-wrapper theme-default">
+                <div width="390px" id="nivo-slider" class="nivoSlider">
+                    @{
+                        if (sliderList.Any())
+                        {
+                            var top5News = sliderList;
+                            if (sliderList.Count() > 5)
+                            {
+                                top5News = sliderList.Take(5);
+                            }
+                            foreach (var item in top5News)
+                            {
+                                <a href="/News/Details/@item.Id" target="_blank">
+                                    <img src="/Images/SaveUpload/Uploaded/@item.ImageForTitle" alt="" title=@item.Title />
+                                </a>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+            <div width="303px" class="hotnews">
+                <ul class="hotnews_title">
+                    <li class="icon"><a href="/News/ShowIndex/@newsType.Id" style="color: red">学校新闻</a></li>
+                </ul>
+                <ul class="hotnews_content">
+                    @foreach (var item in newsList)
+                    {
+                        var title = item.Title.Length > 15 ? item.Title.Substring(0, 15) : item.Title;
+                        <li><span style=" float:right;">@item.CreateDate.ToString("MM-dd")</span><a href="/News/Details/@item.Id">@title</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_TopHonor")
+</div>
+
+<div class="newsblock1c">
+    @Html.Partial("_TopContents",new WebContentTypeViewModel{FirstType = "学校荣誉",SecondType = "学生荣誉"})
+</div>
+
+<div class="newsblock1d">
+    @Html.Partial("_TopContents", new WebContentTypeViewModel { FirstType = "工会", SecondType = "团委学生会" })
+</div>

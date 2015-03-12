@@ -1,0 +1,66 @@
+﻿
+@using MicroB2c.Web.Help
+@model PagedList.IPagedList<MicroB2c.Core.DbModel.WebContent>
+@using PagedList.Mvc;
+
+@{
+    ViewBag.Title = "列表";
+}
+
+<h2>网页内容列表</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+@using (Html.BeginForm("Index", "WebContents", FormMethod.Get))
+{
+    <p>
+        菜单类型： @Html.DropDownList("menuTypeId" as string, ViewBag.MenuTypes as IEnumerable<SelectListItem>, new{onchange = @"form.submit();"})  
+        内容类型： @Html.DropDownList("webContentTypeId" as string, ViewBag.WebContentTypes as IEnumerable<SelectListItem>, new { onchange = @"form.submit();" })   输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+            <input type="submit" value="Search" />
+</p>
+}
+<table class="table">
+    <tr>
+        <th width="80px">
+            类型名称
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Content)
+        </th>
+        <th width ="80px">
+            @Html.DisplayNameFor(model => model.FirstOrDefault().DisplayOrder)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.WebContentType.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Title)
+        </td>
+        <td>
+            @Html.Raw(item.Content.StripTagsRegex().ToSummary(100))
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DisplayOrder)
+        </td>
+        <td>
+            @Html.ActionLink("编辑", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("祥细", "Details", new { id=item.Id }) |
+            @Html.ActionLink("删除", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+</table>
+<br />
+页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+            new { menuTypeId = ViewBag.MenuTypeId,webContentTypeId=ViewBag.WebContentTypeId, page, currentFilter = ViewBag.CurrentFilter }))

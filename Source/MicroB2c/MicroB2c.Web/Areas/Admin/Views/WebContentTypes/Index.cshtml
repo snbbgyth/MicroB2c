@@ -1,0 +1,52 @@
+﻿
+@model PagedList.IPagedList<MicroB2c.Core.DbModel.WebContentType>
+@using PagedList.Mvc;
+@{
+    ViewBag.Title = "列表";
+}
+
+<h2>内容类型列表</h2>
+
+<p>
+    @Html.ActionLink("新建", "Create")
+</p>
+@using (Html.BeginForm("Index", "WebContentTypes", FormMethod.Get))
+{
+    <p>
+        输入查找内容: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
+        <input type="submit" value="Search" />
+    </p>
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().MenuType.Name)
+        </th>
+        <th>
+            @Html.ActionLink("内容类型", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
+        </th>
+
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.MenuType.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.ActionLink("编辑", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("祥细", "Details", new { id=item.Id }) |
+            @Html.ActionLink("删除", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+</table>
+<br />
+页数 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 总数 @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index",
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))

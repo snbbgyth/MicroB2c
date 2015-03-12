@@ -1,0 +1,142 @@
+﻿@using MicroB2c.Web.DAL.Manage
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/nivo-slider.css")
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/Scripts/jquery-2.1.3.min.js")
+    @Scripts.Render("~/Scripts/jquery-ui-1.11.2.min.js")
+    @Scripts.Render("~/Scripts/tinymce/tinymce.js")
+    @Scripts.Render("~/Scripts/Demo.js")
+    <script>
+        tinymce.init({
+            selector: "textarea",
+            plugins: [
+                "advlist autolink autosave link image lists charmap print preview hr anchor pagebreak spellchecker",
+                "searchreplace wordcount visualblocks visualchars code fullscreen insertdatetime media nonbreaking",
+                "table contextmenu directionality emoticons template textcolor paste fullpage textcolor"
+            ],
+            height: 600,
+            width: 800,
+            toolbar1: "undo redo | cut copy paste | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | styleselect formatselect fontselect fontsizeselect",
+            toolbar2: " searchreplace | bullist numlist | outdent indent blockquote | link unlink anchor image media code | inserttime preview | forecolor backcolor",
+            toolbar3: "table | hr removeformat | subscript superscript | charmap emoticons | print fullscreen | ltr rtl | spellchecker | visualchars visualblocks nonbreaking template pagebreak restoredraft",
+            menubar: false,
+            toolbar_items_size: 'small',
+            style_formats: [
+                { title: 'Bold text', inline: 'b' },
+                { title: 'Red text', inline: 'span', styles: { color: '#ff0000' } },
+                { title: 'Red header', block: 'h1', styles: { color: '#ff0000' } },
+                { title: 'Example 1', inline: 'span', classes: 'example1' },
+                { title: 'Example 2', inline: 'span', classes: 'example2' },
+                { title: 'Table styles' },
+                { title: 'Table row 1', selector: 'tr', classes: 'tablerow1' }
+            ],
+            templates: [
+                { title: 'Test template 1', content: 'Test 1' },
+                { title: 'Test template 2', content: 'Test 2' }
+            ],
+            language: 'zh_CN'
+        });
+    </script>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            @{
+                var deptTrendList = WebContentManage.QueryWebContentTypesByMenuName("部门动态");
+                var jallOfFameList = WebContentManage.QueryWebContentTypesByMenuName("荣誉殿堂");
+                var moralEnducationList = WebContentManage.QueryWebContentTypesByMenuName("德育之窗");
+                var partyBuildList = WebContentManage.QueryWebContentTypesByMenuName("党建天地");
+                var newsTypeList = NewsManage.QueryAllNewsTypes();
+            }
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("首页", "Index", "Home")</li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">学校概况<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("学校简介", "SchoolIntroduction", "SchoolInfo")</li>
+                            <li>@Html.ActionLink("学校领导", "SchoolLeader", "SchoolInfo")</li>
+                            <li>@Html.ActionLink("校园风光", "SchoolScenery", "SchoolInfo")</li>
+                            <li>@Html.ActionLink("教师风采", "SchoolIntroduction", "SchoolInfo")</li>
+                            <li>@Html.ActionLink("电子地图", "ElectronicMap", "SchoolInfo")</li>
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">新闻<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var newsType in newsTypeList)
+                            {
+                                <li>@Html.ActionLink(newsType.Name, "ShowIndex", "News", new { id = newsType.Id }, string.Empty)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">部门动态<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var entity in deptTrendList)
+                            {
+                                <li>@Html.ActionLink(entity.Name, "Index", "WebContents", new { webContentTypeId = entity.Id }, string.Empty)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">荣誉殿堂<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var entity in jallOfFameList)
+                            {
+                                <li>@Html.ActionLink(entity.Name, "Index", "WebContents", new { webContentTypeId = entity.Id }, string.Empty)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">党建天地<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var entity in partyBuildList)
+                            {
+                                <li>@Html.ActionLink(entity.Name, "Index", "WebContents", new { webContentTypeId = entity.Id }, string.Empty)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">德育之窗<span class="caret"></span></a>
+                        <ul class="dropdown-menu" role="menu">
+                            @foreach (var entity in moralEnducationList)
+                            {
+                                <li>@Html.ActionLink(entity.Name, "Index", "WebContents", new { webContentTypeId = entity.Id }, string.Empty)</li>
+                            }
+                        </ul>
+                    </li>
+                    <li>@Html.ActionLink("校图书馆", "About", "Home")</li>
+                    <li>@Html.ActionLink("家长留言", "Create", "Comments")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - 赣州中学</p>
+        </footer>
+    </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
