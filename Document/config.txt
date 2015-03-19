@@ -1,0 +1,2 @@
+  protected string _appId = "wx5fc44b85f9bbcb9e"; //换成你的信息
+        protected string _appSecret = "d2fc6d0e6e4d0dc1f7fa992ff3843eb6"; //换成你的信息
